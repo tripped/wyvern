@@ -1,0 +1,52 @@
+Wyvern
+------
+
+Wyvern is an attempt at combining the readability and flexibility of Python with
+the error-checking abilities and performance benefits of a static type system.
+
+The basic idea is that resolving types is a job best left to the compiler; an 
+expression that makes semantic sense should require little more attention from 
+the programmer unless it is impossible to resolve its type according to the 
+program and the rules of the compiler. To this end, it should (in many cases) 
+not be necessary for the programmer to specify in advance the type of variables 
+or parameters. A pseudocode example:
+
+	function momentum(obj):
+		return obj.mass * obj.velocity
+
+	a = { mass: 12, velocity: (1, 0, 0) }
+
+	print momentum(a)
+
+The only specific types in this snippet are those inferred from the literal
+values in the object expression assigned to a. a.mass is an integer, and
+a.velocity is a tuple of three integers. The application of the momentum
+function to a has a result type that is also a tuple of three integers,
+according to scalar multiplication.
+
+But the function momentum could be applied to any object that has fields
+named 'mass' and 'velocity' whose types are valid as the left and right
+operands respectively of operator '*'.
+
+This has several immediate benefits:
+ - It saves on typing.
+ - The semantic idea of 'momentum' has a single point of expression in the
+   program. In a language like Java, you would have to define the function
+   for every single type of thing whose momentum you might wish to compute,
+   whether through inheritance and dynamic dispatch, or explicit generics.
+   One single definition of the 'momentum' idea improves orthogonality and
+   better enforces domain semantics.
+   
+There are also some drawbacks:
+ - Underlying runtime dispatch is difficult (impossible?) to avoid, and some
+   overhead from additional RTTI is implied.
+ - Reporting type errors becomes dodgier. Types still must resolve at compile
+   time, but without explicit hints from the programmer, finding the point
+   where the 'mistake' lies can be difficult. It may be a challenge to provide
+   useful diagnostics that help the programmer find exactly where they have
+   erred in a lengthy chain of dependent types that cannot be resolved. If
+   caution is not exercised, wyvern diagnostics may end up being almost as
+   useful as C++ template errors.
+
+
+- More to come! -
